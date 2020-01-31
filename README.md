@@ -47,4 +47,4 @@ Turtle and tKinter both cause same type of crash with mojave 14.6...
 Matplob lib works. Seems a bit farfetched though.. 
 
 Not finding any solutions. Drifitng around wondering if it would be an idea to dive into learning how blender works.. Anyway.. thats it for today. 
-Learned somewaht how plotly works a bit. *To be continued ...* 
+Learned somewhat how plotly works a bit. *To be continued ...* 
