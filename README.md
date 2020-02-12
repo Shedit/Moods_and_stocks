@@ -20,7 +20,7 @@ A visualization that updates in realtime showing some abstract represesntation o
 	Free api key (pyrt.91@gmail.com):  
 	Q2AJO6LYW66V9B0J
 
-3 hours in, stuck at sorting out paths.... FML 
+3 hours in, stuck at sorting out paths..
 
 
 Finally sorted out som kind of measurement value to represent the change in color by taking a different between the current imported data, (current min)
@@ -30,12 +30,12 @@ Now off to trying to see how to get this represented as a gui change. Tkinter ti
 
 ## **2. Figure out how to generate abstract graphic** 
 
-Alright, Tkinter is probaly the package for this type of work. What i want to do is tto try to print a color, 
+Alright, Tkinter is probaly the package for this type of work. What i want to do is to try to print a color, 
 and be able to change this colors properties with a number. 
 
     Found out the current version of Mojave (14.6 something) causes Tkinter to malfunction, 
-	when running it it logs out from the computer and restarts some of the exists programs (not all, some closes for good).
-	Basically causes an outmatic log out.  *To be continued ...* **(2019.09.01)**
+	when running it it logs out from the computer and restarts some of the exist programs (not all, some closes for good).
+	Basically causes an automatic log out.  *To be continued ...* **(2019.09.01)**
 
 **(2019.09.01)**
 	Back again.. Hello there.. Tried first thing to establish a git for the Moods_and_Stocks folder. 
@@ -46,5 +46,5 @@ Turtle and tKinter both cause same type of crash with mojave 14.6...
 
 Matplob lib works. Seems a bit farfetched though.. 
 
-Not finding any solutions. Drifitng around wondering if it would be an idea to dive into learning how blender works.. Anyway.. thats it for today. 
+Not finding any solutions. Drifting around wondering if it would be an idea to dive into learning how blender works.. Anyway.. thats it for today. 
 Learned somewhat how plotly works a bit. *To be continued ...* 
