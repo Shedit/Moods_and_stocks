@@ -1,66 +1,106 @@
-#%% 
-# Getting data from a stock API 
 
-from alpha_vantage.timeseries import TimeSeries
+
+
+# %%
+import random
+import time
+
+from matplotlib import pyplot as plt
+from matplotlib import animation
+
+
+class RegrMagic(object):
+    """Mock for function Regr_magic()
+    """
+    def __init__(self):
+        self.x = 0
+    def __call__(self):
+        self.x += 1
+        return self.x
+
+regr_magic = RegrMagic()
+
+def frames():
+    while True:
+        yield regr_magic()
+
+
+"""
+===============
+Rain simulation
+===============
+
+Simulates rain drops on a surface by animating the scale and opacity
+of 50 scatter points.
+
+Author: Nicolas P. Rougier
+""" 
+import random
+from functions import *
+import numpy as np
 import matplotlib.pyplot as plt
-ts = TimeSeries(key='Q2AJO6LYW66V9B0J',output_format='pandas')
-data, meta_data = ts.get_intraday(symbol='^DJI', interval='1min', outputsize='compact')
-print(data)
-#data is in reversed order data2 corrects this 
-# # data imported is inverse then latest data is on top. 
-data2 = data.iloc[::-1]
-data2['4. close'].plot()
+from matplotlib.animation import FuncAnimation
 
-plt.title('Intraday TimeSeries Dow jones')
-plt.show()
+# Fixing random state for reproducibility
+np.random.seed(19680801)
 
-#%% 
-# Check the current date matches with data 
-#def time_checker() :
-   # from datetime import datetime
-    # check if first date in dataframe is equal to current date 
-     #   if data.index.values[0] != datetime.now().strftime('%Y-%m-%d %H:%M:00') 
-   # data, meta_data = ts.get_intraday(symbol='^DJI', interval='1min', outputsize='compact')
-    #else 
-   ## return null 
+data = get_data()
 
-#%% Testloop for iteration and countin a continuous difference between updated closing price vs former closing price
+diff_list = diff_data(data, 3)
 
-former_value = 0
-count = 0
-for i in data2.index: 
-    current_value = data2.iloc[count, [3]]
-    if (count == 0): 
-        difference_initation = current_value - current_value
-        print("diff init", difference_initation)
-        former_value = current_value
-        count +=1
+# Create new Figure and an Axes which fills it.
+fig = plt.figure(figsize=(7, 7))
+ax = fig.add_axes([0, 0, 1, 1], frameon=False)
+ax.set_xlim(0, 1), ax.set_xticks([])
+ax.set_ylim(0, 1), ax.set_yticks([])
+
+# Create rain data
+n_drops = len(diff_list)
+rain_drops = np.zeros(n_drops, dtype=[('position', float, 2),
+                                      ('size',     float, 1),
+                                      ('growth',   float, 1),
+                                      ('color',    float, 4)])
+
+# Initialize the raindrops in random positions and with
+# random growth rates.
+rain_drops['position'] = np.random.uniform(0, 1, (n_drops, 2))
+rain_drops['growth'] = np.random.uniform(50, 200, n_drops)
+
+# Construct the scatter which we will update during animation
+# as the raindrops develop.
+scat = ax.scatter(rain_drops['position'][:, 0], rain_drops['position'][:, 1],
+                  s=rain_drops['size'], lw=6, edgecolors=rain_drops['color'],
+                  facecolors='none')
+
+
+def update(frame_number):
+    # Get an index which we can use to re-spawn the oldest raindrop.
+    print(frame_number)
+    current_index = frame_number % n_drops
+    # Make all colors more transparent as time progresses.
+    rain_drops['color'][:, 3] -= 1.0/len(rain_drops)
+    rain_drops['color'][:, 3] = np.clip(rain_drops['color'][:, 3], 0, 1)
+
+    # Make all circles bigger.
+    rain_drops['size'] += rain_drops['growth']
+
+    # Pick a new position for oldest rain drop, resetting its size,
+    # color and growth factor.
+    rain_drops['position'][current_index] = np.random.uniform(0, 1, 2)
+    rain_drops['size'][current_index] = 5
+    rain_drops['growth'][current_index] = np.random.uniform(50, 200)
+    if (diff_list[frame_number] > 0 ):
+      rain_drops['color'][current_index] = (0, 1, 0, 0.6)
     else:
-        difference = difference_initation + (current_value - former_value)
-        print("diff \n", difference)
-        count +=1
+      rain_drops['color'][current_index] = (1, 0, 0, 0.6)
+ 
+
+    # Update the scatter collection, with the new colors, sizes and positions.
+    scat.set_edgecolors(rain_drops['color'])
+    scat.set_sizes(rain_drops['size'])
+    scat.set_offsets(rain_drops['position'])
 
 
-
-#%% Find out how to write in gui 
-
-import plotly as py
-import plotly.graph_objs as go 
-
-trace = {'x': [1,2], 'y': [1,2]}
-data = [trace]
-layout = {} 
-fig = go.Figure( 
-  data = data, layout = layout)
-
-fig.show()
-
-#%%
-import plotly.graph_objects as go
-fig = go.Figure(data=go.Bar(y=[2, 3, 1]))
-fig.show()
-
-
-#%%
-
-
+# Construct the animation, using the update function as the animation director.
+animation = FuncAnimation(fig, update, interval= 50, frames=frames)
+plt.show()

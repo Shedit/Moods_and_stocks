@@ -1,5 +1,5 @@
 {
-    "python.pythonPath": "/usr/local/anaconda3/bin/python",
+    "python.pythonPath": "env/bin/python",
     "git.ignoreLimitWarning": true,
     "cSpell.words": [
         "plotly"

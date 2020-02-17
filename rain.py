@@ -8,13 +8,18 @@ of 50 scatter points.
 
 Author: Nicolas P. Rougier
 """
-
+import diff from .main 
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 
 # Fixing random state for reproducibility
 np.random.seed(19680801)
+
+
+
+
+
 
 
 # Create new Figure and an Axes which fills it.
@@ -67,5 +72,5 @@ def update(frame_number):
 
 
 # Construct the animation, using the update function as the animation director.
-animation = FuncAnimation(fig, update, interval=10)
+animation = FuncAnimation(fig, update, interval=50)
 plt.show()
