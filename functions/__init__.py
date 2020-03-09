@@ -1,16 +1,23 @@
 
 import pandas as pd 
+import alpha_vantage
+from alpha_vantage.timeseries import TimeSeries
+import json
+APIKEY = 'Q2AJO6LYW66V9B0J'
 
-def get_data(key = 'Q2AJO6LYW66V9B0J', symbol = '^DJI', reverse = True): 
-  from alpha_vantage.timeseries import TimeSeries
-  ts = TimeSeries(key= key,output_format='pandas')
 
-  data, meta_data = ts.get_intraday(symbol='^DJI', interval='1min', outputsize='compact')
+def get_data_intraday(key = APIKEY, symbol = '^DJI', reverse = True):
+  ts = TimeSeries(key= APIKEY, output_format='pandas') 
+  data, meta_data = ts.get_intraday(symbol, interval='1min', outputsize='compact')
   if (reverse == True):
     data = data.loc[::-1]
 
   return(data)
 
+def get_data_quote(key = APIKEY, symbol = '^DJI'):
+  ts = TimeSeries(key= APIKEY)
+  data = ts.get_quote_endpoint(symbol)
+  return(data)
 
 def diff_data(datalist, col = 0):
   the_list = [];
