@@ -4,6 +4,7 @@
 # %%
 import random
 import time
+from functions import APIcalls
 
 from matplotlib import pyplot as plt
 from matplotlib import animation
@@ -12,9 +13,17 @@ from matplotlib import animation
 class RegrMagic(object):
     """Mock for function Regr_magic()
     """
+
     def __init__(self):
-        self.x = 0
+      self.x = 0
+      self.y = APIcalls.get_data_intraday(reverse = False, first_row= True)
+      print(self.y)
     def __call__(self):
+        if (self.x != 0):
+          time.sleep(60*5)  
+        data = APIcalls.get_data_quote()
+        print(data['05. price'])
+        self.y = float(data['05. price']) - self.y
         self.x += 1
         return self.x
 
@@ -44,36 +53,34 @@ from matplotlib.animation import FuncAnimation
 # Fixing random state for reproducibility
 np.random.seed(19680801)
 
-data = get_data()
-
-diff_list = diff_data(data, 3)
-
 # Create new Figure and an Axes which fills it.
 fig = plt.figure(figsize=(7, 7))
 ax = fig.add_axes([0, 0, 1, 1], frameon=False)
 ax.set_xlim(0, 1), ax.set_xticks([])
 ax.set_ylim(0, 1), ax.set_yticks([])
 
-# Create rain data
-n_drops = len(diff_list)
-rain_drops = np.zeros(n_drops, dtype=[('position', float, 2),
-                                      ('size',     float, 1),
-                                      ('growth',   float, 1),
-                                      ('color',    float, 4)])
 
-# Initialize the raindrops in random positions and with
-# random growth rates.
-rain_drops['position'] = np.random.uniform(0, 1, (n_drops, 2))
-rain_drops['growth'] = np.random.uniform(50, 200, n_drops)
-
-# Construct the scatter which we will update during animation
-# as the raindrops develop.
-scat = ax.scatter(rain_drops['position'][:, 0], rain_drops['position'][:, 1],
-                  s=rain_drops['size'], lw=6, edgecolors=rain_drops['color'],
-                  facecolors='none')
 
 
 def update(frame_number):
+    
+    # Create rain data
+    n_drops = regr_magic.x
+    rain_drops = np.zeros(n_drops, dtype=[('position', float, 2),
+                                          ('size',     float, 1),
+                                          ('growth',   float, 1),
+                                          ('color',    float, 4)])
+
+    # Initialize the raindrops in random positions and with
+    # random growth rates.
+    rain_drops['position'] = np.random.uniform(0, 1, (n_drops, 2))
+    rain_drops['growth'] = np.random.uniform(50, 200, n_drops)
+
+    # Construct the scatter which we will update during animation
+    # as the raindrops develop.
+    scat = ax.scatter(rain_drops['position'][:, 0], rain_drops['position'][:, 1],
+                      s=rain_drops['size'], lw=6, edgecolors=rain_drops['color'],
+                      facecolors='none')
     # Get an index which we can use to re-spawn the oldest raindrop.
     print(frame_number)
     current_index = frame_number % n_drops
@@ -84,12 +91,15 @@ def update(frame_number):
     # Make all circles bigger.
     rain_drops['size'] += rain_drops['growth']
 
+    # values 
+    diff_value = regr_magic.y
+
     # Pick a new position for oldest rain drop, resetting its size,
     # color and growth factor.
     rain_drops['position'][current_index] = np.random.uniform(0, 1, 2)
     rain_drops['size'][current_index] = 5
     rain_drops['growth'][current_index] = np.random.uniform(50, 200)
-    if (diff_list[frame_number] > 0 ):
+    if (diff_value > 0 ):
       rain_drops['color'][current_index] = (0, 1, 0, 0.6)
     else:
       rain_drops['color'][current_index] = (1, 0, 0, 0.6)
